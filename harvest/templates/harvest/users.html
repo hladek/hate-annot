@@ -1,0 +1,20 @@
+{% extends "harvest/base.html" %}
+{% block sidebar %}
+<a href="/harvest/">Home</a>
+<a href="..">Domov</a>
+{% endblock %}
+
+{% block content %}
+<h1>User annotation results</h1>
+<ul>
+{% for user in users %}
+<li>
+<a href="/harvest/question?userid={{user.username}}">{{user.username}}</a>
+{% for item in user.items %}
+{{item.name}} : {{item.annotation_count }}
+{% endfor %}
+</li>
+
+{% endfor %}
+</ul>
+{% endblock %}

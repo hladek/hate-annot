@@ -1,0 +1,34 @@
+- model: harvest.Batch
+  pk: 1
+  fields: 
+    name: abc
+    description: Ahoj Svet
+    task: ahoj
+    priority: 0
+    required_answers: 3
+    status: annotation
+- model: harvest.Question
+  pk: 1
+  fields:
+    data: ahoj1
+    meta: zzz
+    batch_id: 1
+- model: harvest.Question
+  pk: 2
+  fields:
+    data: ahoj2
+    meta: zzz
+    batch_id: 1
+- model: harvest.Question
+  pk: 3
+  fields:
+    data: ahoj3
+    meta: zzz
+    batch_id: 1
+- model: harvest.Question
+  pk: 4
+  fields:
+    data: ahoj4
+    meta: zzz
+    batch_id: 1
+    

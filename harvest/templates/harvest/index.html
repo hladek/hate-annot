@@ -1,0 +1,24 @@
+{% extends "harvest/base.html" %}
+{% block sidebar %}
+<p>
+<a href="/harvest/start">Annotatate new questions</a>
+<a href="/harvest/users">User details</a>
+</p>
+{% endblock  %}
+{% block content %}
+<h3>Annotation overview</h3>
+<table>
+<tr>
+<td>Name</td>
+<td>Annotation count</td>
+</th>
+{% for batch in batches %}
+<tr>
+<td>{{batch.name}}</td>
+<td>{{batch.status}}</td>
+<td>{{batch.description}}</td>
+<td>{{batch.annotation_count}}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock %}

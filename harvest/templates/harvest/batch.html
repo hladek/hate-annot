@@ -1,0 +1,14 @@
+{% extends "harvest/base.html" %}
+{% block sidebar %}
+<a href="..">Domov</a>
+{% endblock %}
+
+{% block content %}
+<h3>{{batch.name}} </h3>
+<ul>
+{% for user in users%}
+{{ user}}
+{% endfor %}
+</ul>
+
+{% endblock %}

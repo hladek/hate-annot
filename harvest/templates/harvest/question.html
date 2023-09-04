@@ -1,0 +1,38 @@
+{% extends "harvest/base.html" %}
+{% block sidebar %}
+<a href="..">Home</a>
+{% endblock %}
+
+{% block content %}
+{% if question %}
+<h3>Text</h3>
+<p>
+{{question.data}}
+</p>
+<h3> Annotation </h3>
+<form activation="/harvest/question/" method="post">
+	<input type="hidden" name="question_id" value="{{ question.id }}"></input>
+	<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}"></input>
+  <ul>
+	{{form.as_ul}}
+	<li>
+	<input type="submit" name="accept" value="accept"/>
+	<input type="submit" name="ignore" value="ignore"/>
+	<input type="submit" name="reject" value="reject"/>
+	</li>
+	</ul>
+</form>
+{% else %}
+<p>
+Úlohy nie sú k dispozícii
+</p>
+{% endif %}
+
+<p> User : {{ userid }}, Current data batch: {{batch.name}} </p>
+<h3> Total annotations </h3>
+<ul>
+{% for batch in prev_questions %}
+<li>{{batch.name}} {{batch.annotation_count}} </li>
+{% endfor %}
+</ul>
+{% endblock %}
