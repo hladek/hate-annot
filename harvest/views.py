@@ -1,13 +1,68 @@
 from django.shortcuts import render
-from django.db.models import Count,Sum
+from django.db.models import Count,Sum,Min, Max
 from django.shortcuts import redirect
 from . import models
 from . import forms
 import random
 
-# get question with least answers
+# get question with least answers from given user
 def question_queue(batch,user_name):
     print(batch)
+    maximum_annotations_per_user_batch = 0.7
+    maximum_annotations_per_question = 3
+    # find first and last id of question
+    q = models.Question.objects.filter(batch_id=batch.id).aggregate(min_id=Min("id"),max_id=Max("id"))
+    print(q)
+    max_id = q["max_id"]
+    min_id = q["min_id"]
+
+    num_annotations = 0
+    r = models.Annotation.objects.filter(username=user_name,question__batch=batch).annotate(count_id=Count("id"))
+    if len(r) > 0:
+        num_annotations = r[0].count_id
+
+    # Batch exhausted for user, no more annotations
+    if ((max_id - min_id) * maximum_annotations_per_user_batch) <= num_annotations:
+        print(max_id,min_id)
+        print(num_annotations)
+        print("BATCH FILLLE")
+        return None
+
+    # find id of last annotated question
+    qid = None
+    last_annotations = models.Annotation.objects.filter(username=user_name,question__batch=batch).order_by("created_at")
+    if len(last_annotations) == 0:
+        # start with random question
+        qid = random.randint(q.min_id,q.max_id + 1)
+    else:
+        # get next_question
+        last_question = last_annotations[-1].question
+        qid = last_question.id
+    next_question = None
+    for i in range(max_id -min_id - num_annotations):
+        qid += 1
+        if quid == max_id:
+            qid = min_id
+        # verify qid
+        next_question = models.Question.objects.get(id=qid)
+        if next_question is None:
+            continue
+        if len(next_question.annotation_set) > maximum_annotations_per_question:
+            next_question = None
+            continue
+        for a in next_question.annotation_set.all():
+             if user_name == a.username:
+                next_question = None
+                continue
+
+    return next_question
+
+
+
+        
+
+
+def question_queue2(batch,user_name):
     questions = models.Question.objects.filter(batch_id=batch.id).annotate(num_annotation=Count("annotation")).order_by("num_annotation")
     goodq = []
     for q in questions:

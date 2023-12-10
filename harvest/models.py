@@ -33,7 +33,7 @@ class HateLevel(models.TextChoices):
     HIGH = "high hate","high hate"
 
 class HateCathegory(models.TextChoices):
-    RACE = "race","rase"
+    RACE = "race","race"
     RELIGION = "religion","religion"
     APPEREANCE = "appereance","appereance"
     DISABILITY = "disability","disability"
@@ -49,6 +49,7 @@ class Annotation(models.Model):
     hate_cathegory = models.CharField(max_length=64,choices=Status.choices,default=Status.PREPARATION)
     username = models.CharField(db_index=True,max_length=128)
     answer = models.CharField(max_length=64,choices=Answers.choices)
+    created_at = models.DateTimeField(auto_now_add=True,db_index=True)
 
 
 # Create your models here.
