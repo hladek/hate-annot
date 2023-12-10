@@ -59,32 +59,30 @@ def question_queue(batch,user_name):
 
     return next_question
 
-
-
-        
-
-
-def question_queue2(batch,user_name):
+def get_database(batch):
     questions = models.Question.objects.filter(batch_id=batch.id).annotate(num_annotation=Count("annotation")).order_by("num_annotation")
-    goodq = []
     for q in questions:
-        # check answers by the user
-        print(q)
-        isbad = False
+        doc = {
+            "id": q.id,
+            "text": q.data,
+            "meta": json.loads(q.meta),
+            "batch": batch,
+        }
+        answers = []
         for a in q.annotation_set.all():
-            if user_name == a.username:
-                isbad = True
-        if isbad:
-            continue
-        goodq.append(q)
-
-    if len(goodq) == 0:
-        # Batch is depleted
-        return None
-    # draw random
-    return random.choice(goodq)
-
-
+            an = {
+                "id": a.id,
+                "hate_level": a.hate_level,
+                "hate_cathegory": a.hate_cathegory,
+                "user_name": a.username,
+                "answer": a.answer,
+                "created_at": a.created_at
+            }
+            answers.append(an)
+        doc["annotations"] = answers
+        json.dumps(doc)
+            
+        
 def question(request):
     userid = "anonymous"
     if "userid" in request.GET:
