@@ -30,27 +30,29 @@ def question_queue(batch,user_name):
 
     # find id of last annotated question
     qid = None
-    last_annotations = models.Annotation.objects.filter(username=user_name,question__batch=batch).order_by("created_at")
+    last_annotations = models.Annotation.objects.filter(username=user_name,question__batch=batch).order_by("-created_at")
     if len(last_annotations) == 0:
         # start with random question
-        qid = random.randint(q.min_id,q.max_id + 1)
+        qid = random.randint(min_id,max_id + 1)
     else:
         # get next_question
-        last_question = last_annotations[-1].question
+        last_question = last_annotations[0].question
         qid = last_question.id
     next_question = None
     for i in range(max_id -min_id - num_annotations):
         qid += 1
-        if quid == max_id:
+        if qid > max_id:
             qid = min_id
         # verify qid
-        next_question = models.Question.objects.get(id=qid)
-        if next_question is None:
+        next_question = models.Question.objects.filter(id=qid)
+        if len(next_question) == 0:
             continue
-        if len(next_question.annotation_set) > maximum_annotations_per_question:
+        next_question = next_question[0]
+        anots = next_question.annotation_set.all()
+        if len(anots) > maximum_annotations_per_question:
             next_question = None
             continue
-        for a in next_question.annotation_set.all():
+        for a in anots:
              if user_name == a.username:
                 next_question = None
                 continue
